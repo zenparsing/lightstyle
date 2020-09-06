@@ -1,0 +1,13 @@
+{
+  "name": "lightstyle",
+  "version": "0.1.0",
+  "main": "./lightstyle.js",
+  "type": "module",
+  "description": "Lightweight scoped CSS injection",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zenparsing/lightstyle.git"
+  },
+  "homepage": "https://github.com/zenparsing/lightstyle"
+}
