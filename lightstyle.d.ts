@@ -1,10 +1,10 @@
-export const cssSelectorSymbol: unique symbol;
+export const cssStringSymbol: unique symbol;
 
 export class ClassNameSelector {
   constructor(name: string);
 
   className: string;
-  [cssSelectorSymbol]: string;
+  [cssStringSymbol]: string;
 
   toString(): string
 }

@@ -1,8 +1,3 @@
-const $cssRules = Symbol('cssRules');
-const $cssSelector = Symbol('cssSelector');
-
-export const cssSelectorSymbol = $cssSelector;
-
 function hashString(input) {
   let h = 5381;
   for (let i = 0; i < input.length; i++) {
@@ -20,10 +15,12 @@ function uniqueName(name) {
   return `${name}-${id}`;
 }
 
+export const cssStringSymbol = Symbol('cssString');
+
 export class ClassNameSelector {
   constructor(name) {
     this.className = uniqueName(name);
-    this[$cssSelector] = '.' + this.className;
+    this[cssStringSymbol] = '.' + cssEscape(this.className);
   }
 
   toString() {
@@ -81,8 +78,8 @@ if (typeof CSS === 'object' && typeof CSS.escape === 'function') {
 }
 
 class CssTemplateResult {
-  constructor(rules) { this[$cssRules] = rules }
-  toString() { return this[$cssRules] }
+  constructor(rules) { this[cssStringSymbol] = rules }
+  toString() { return this[cssStringSymbol] }
 }
 
 export function css(callsite, ...values) {
@@ -93,13 +90,7 @@ export function css(callsite, ...values) {
     rules += part;
     const value = values[i++];
     if (value != null) {
-      if (value[$cssRules]) {
-        rules += value[$cssRules];
-      } else if (value[$cssSelector]) {
-        rules += value[$cssSelector];
-      } else {
-        rules += cssEscape(value);
-      }
+      rules += value[cssStringSymbol] || cssEscape(value);
     }
   }
 
