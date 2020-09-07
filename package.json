@@ -1,7 +1,8 @@
 {
   "name": "lightstyle",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "main": "./lightstyle.js",
+  "types": "./lightstyle.d.ts",
   "type": "module",
   "description": "Lightweight scoped CSS injection",
   "license": "MIT",

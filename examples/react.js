@@ -1,8 +1,8 @@
 import * as React from 'react'
 
-import { classNames } from './lightstyle.js'
+import { ClassNameSelector, cssSelectorSymbol } from '../lightstyle.js'
 
-export { css, insertStyles } from './index.js'
+export { css, insertStyles } from '../lightstyle.js'
 
 export function components(inner = 'div') {
   return new Proxy({}, {
@@ -11,7 +11,7 @@ export function components(inner = 'div') {
 }
 
 function createComponent(inner, name) {
-  const className = String(classNames()[name]);
+  const { className } = new ClassNameSelector(name);
 
   function LightstyleComponent(props) {
     return React.createElement(inner, {
@@ -22,7 +22,7 @@ function createComponent(inner, name) {
     });
   }
 
-  LightstyleComponent.classList = [className];
+  LightstyleComponent[cssSelectorSymbol] = '.' + className;
 
-  return CssComponent;
+  return LightstyleComponent;
 }

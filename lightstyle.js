@@ -1,3 +1,8 @@
+const $cssRules = Symbol('cssRules');
+const $cssSelector = Symbol('cssSelector');
+
+export const cssSelectorSymbol = $cssSelector;
+
 function hashString(input) {
   let h = 5381;
   for (let i = 0; i < input.length; i++) {
@@ -6,21 +11,28 @@ function hashString(input) {
   return h >>> 0;
 }
 
-let nameCount = 0;
+let nameCount = 1;
 
 function uniqueName(name) {
-  const hash = hashString(`${name}-${++nameCount}`);
+  const hash = hashString(`${name}-${nameCount}`);
+  nameCount = (nameCount + 1) >>> 0;
   const id = hash.toString(36).padStart(5, '0');
   return `${name}-${id}`;
 }
 
-class CssClassName {
-  constructor(name) { this.classList = [uniqueName(name)] }
-  toString() { return this.classList[0] }
+export class ClassNameSelector {
+  constructor(name) {
+    this.className = uniqueName(name);
+    this[$cssSelector] = '.' + this.className;
+  }
+
+  toString() {
+    return this.className;
+  }
 }
 
 const classNameGenerator = new Proxy({}, {
-  get(target, prop) { return new CssClassName(prop) }
+  get(target, prop) { return new ClassNameSelector(prop) }
 });
 
 export function classNames() {
@@ -68,9 +80,7 @@ if (typeof CSS === 'object' && typeof CSS.escape === 'function') {
   cssEscape = CSS.escape;
 }
 
-const $cssRules = Symbol('cssRules');
-
-class CssRules {
+class CssTemplateResult {
   constructor(rules) { this[$cssRules] = rules }
   toString() { return this[$cssRules] }
 }
@@ -85,25 +95,23 @@ export function css(callsite, ...values) {
     if (value != null) {
       if (value[$cssRules]) {
         rules += value[$cssRules];
-      } else if (value.classList) {
-        for (const className of value.classList) {
-          rules += '.' + cssEscape(className);
-        }
+      } else if (value[$cssSelector]) {
+        rules += value[$cssSelector];
       } else {
         rules += cssEscape(value);
       }
     }
   }
 
-  return new CssRules(rules);
+  return new CssTemplateResult(rules);
 }
 
-let cssText = '';
+let pendingCSS = '';
 
 export function insertStyles(rules) {
-  const scheduled = cssText !== '';
+  const scheduled = pendingCSS !== '';
 
-  cssText += String(rules);
+  pendingCSS += String(rules);
 
   if (!scheduled) {
     if (document.readyState === 'loading') {
@@ -115,13 +123,13 @@ export function insertStyles(rules) {
 }
 
 function inject() {
-  if (!cssText) {
+  if (!pendingCSS) {
     return;
   }
 
   const element = document.createElement('style');
-  element.append(cssText);
-  cssText = '';
+  element.append(pendingCSS);
+  pendingCSS = '';
 
   const root = document.documentElement;
   const parent = root.firstElementChild || root;
