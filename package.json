@@ -11,5 +11,9 @@
     "type": "git",
     "url": "https://github.com/zenparsing/lightstyle.git"
   },
-  "homepage": "https://github.com/zenparsing/lightstyle"
+  "homepage": "https://github.com/zenparsing/lightstyle",
+  "scripts": {
+    "test": "node test/index.js",
+    "prepublishOnly": "node test/index.js"
+  }
 }
