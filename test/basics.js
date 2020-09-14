@@ -1,16 +1,18 @@
 import * as assert from 'assert';
 
-import { classNames, css } from '../lightstyle.js';
+import { classNames, css, cssStringSymbol } from '../lightstyle.js';
 
 function normalize(value) {
   return String(value).replace(/(^|\n)\s+/g, '$1');
 }
 
-{
+export function testBasics() {
   const { root, header, main } = classNames();
 
   assert.ok(String(root).startsWith('root'));
   assert.strictEqual(String(root), root.className);
+  assert.strictEqual(root[cssStringSymbol], '.' + root.className);
+  assert.notStrictEqual(String(classNames().root), String(root));
 
   assert.strictEqual(normalize(css`
     ${root} {
@@ -45,5 +47,18 @@ function normalize(value) {
 
     .alert { color: red; }
   `));
+}
 
+export function testCssStringSymbol() {
+  const obj = { [cssStringSymbol]: 'div' }
+
+  assert.strictEqual(normalize(css`
+    ${obj} {
+      display: none;
+    }
+  `), normalize(`
+    div {
+      display: none;
+    }
+  `));
 }

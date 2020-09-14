@@ -5,6 +5,7 @@
   "types": "./lightstyle.d.ts",
   "type": "module",
   "description": "Lightweight scoped CSS injection",
+  "keywords": ["css"],
   "license": "MIT",
   "repository": {
     "type": "git",

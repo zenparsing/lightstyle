@@ -1,9 +1,9 @@
 function hashString(input) {
   let h = 5381;
   for (let i = 0; i < input.length; i++) {
-    h = (h * 33) ^ input.charCodeAt(i);
+    h = ((h * 33) ^ input.charCodeAt(i)) >>> 0;
   }
-  return h >>> 0;
+  return h;
 }
 
 let nameCount = 1;
@@ -118,11 +118,13 @@ function inject() {
     return;
   }
 
-  const element = document.createElement('style');
-  element.append(pendingCSS);
+  const text = pendingCSS;
   pendingCSS = '';
+
+  const element = document.createElement('style');
+  element.append(text);
 
   const root = document.documentElement;
   const parent = root.firstElementChild || root;
-  parent.appendChild(element);
+  parent.append(element);
 }

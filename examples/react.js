@@ -1,8 +1,8 @@
-import * as React from 'react'
+import * as React from 'react';
 
-import { ClassNameSelector, cssStringSymbol } from '../lightstyle.js'
+import { ClassNameSelector, cssStringSymbol } from '../lightstyle.js';
 
-export * from '../lightstyle.js'
+export * from '../lightstyle.js';
 
 export function styleComponents(inner = 'div') {
   return new Proxy({}, {
@@ -13,14 +13,13 @@ export function styleComponents(inner = 'div') {
 function createComponent(inner, name) {
   const selector = new ClassNameSelector(name);
 
-  function LightstyleComponent(props) {
-    return React.createElement(inner, {
-      ...props,
-      className: props.className
-        ? selector.className + ' ' + props.className
-        : selector.className
-    });
-  }
+  const LightstyleComponent = React.forwardRef((props, ref) => {
+    let { className } = selector;
+    if (props.className) {
+      className += ' ' + props.className;
+    }
+    return React.createElement(inner, { ...props, ref, className });
+  });
 
   LightstyleComponent[cssStringSymbol] = selector[cssStringSymbol];
 
