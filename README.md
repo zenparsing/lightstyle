@@ -45,6 +45,7 @@ import { classNames } from 'lightstyle';
 
 const { a } = classNames();
 
+// Prints a unique CSS class name.
 console.log(a.className);
 ```
 
@@ -55,6 +56,8 @@ import { classNames, css } from 'lightstyle';
 
 const { a } = classNames();
 
+// The reference to `a` will be replaced by a unique CSS
+// class name.
 console.log(String(css`
   ${a} {
     color: purple;
@@ -127,7 +130,7 @@ const result = css`h1 { font-weight: bold; }`;
 console.log(result.toString());
 ```
 
-#### `classNameSelector[cssStringSymbol]`
+#### `cssTemplateResult[cssStringSymbol]`
 
 The CSS text of the evaluated `css` tagged template literal.
 
